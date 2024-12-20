@@ -46,13 +46,14 @@
             </WrapPanel>
 
 
-            <ListView Name="AgentListView" Grid.Row="1">
+            <ListView Name="AgentListView" Grid.Row="1" SelectionChanged="AgentListView_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                    <Grid Background="{Binding FonStyle}" >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition></ColumnDefinition>
-                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="400"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50"/>
@@ -73,14 +74,29 @@
                                 </Image.Source>
                             </Image>
                             <TextBlock Text="{Binding Phone}" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" FontSize="20"></TextBlock>
-                            <TextBlock Text="{Binding Priority, StringFormat='Приоритетность {0}'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" FontSize="16" ></TextBlock>
+                            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1">
+                                <TextBlock Text="Продажи за год: " FontSize="20"></TextBlock>
+                            <TextBlock Text="{Binding Prod}" FontSize="20"></TextBlock>
+                            </StackPanel>
+                        <TextBlock Text="{Binding Priority, StringFormat='Приоритетность {0}'}" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" FontSize="16" ></TextBlock>
                             <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0">
                                 <TextBlock Text="{Binding AgentType.Title}"   FontSize="20" Margin="5"></TextBlock>
                                 <TextBlock Text="|"  FontSize="20" Margin="5"></TextBlock>
-                                <TextBlock Text="{Binding Title}"  FontSize="20" Margin="5"></TextBlock>
-
+                            <TextBlock Text="{Binding Title}"  FontSize="20" Margin="5"></TextBlock>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Grid.RowSpan="3" Orientation="Horizontal">
+                            <TextBlock Text="Скидка " FontSize="15"></TextBlock>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Discount}" FontSize="20"></TextBlock>
+                                <TextBlock Text="%" FontSize="20"></TextBlock>
                             </StackPanel>
-                        </Grid>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal">
+                            <Button Name="EditButton" Content="редактировать" Margin="2" Click="EditButton_Click" ></Button>
+                        </StackPanel>
+
+                    </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
@@ -99,6 +115,12 @@
                 </ListBox.ItemsPanel>
             </ListBox>
             <Button Name="RightDirButton" Content="&gt;" Width="20" Height="25" Click="RightDirButton_Click" ></Button>
+        </StackPanel>
+
+
+        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal">
+            <Button Content="Добавить" Name="AddButton" Click="AddButton_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Row="1" ></Button>
+            <Button Content="Изменить приоритет на ..." Name="ChangePriorityButton" Click="ChangePriorityButton_Click"></Button>
         </StackPanel>
 
     </Grid>

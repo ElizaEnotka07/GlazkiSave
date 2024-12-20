@@ -14,6 +14,19 @@ namespace СитдиковаГлазкиСейв
     
     public partial class ProductSale
     {
+
+        public decimal Stoimost
+        {
+            get
+            {
+                decimal s;
+                s = Product.MinCostForAgent * this.ProductCount;
+                return s;
+
+            }
+
+
+        }
         public int ID { get; set; }
         public int ProductID { get; set; }
         public int AgentID { get; set; }

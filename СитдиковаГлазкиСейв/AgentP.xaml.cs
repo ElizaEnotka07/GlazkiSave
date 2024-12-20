@@ -31,6 +31,7 @@ namespace СитдиковаГлазкиСейв
         {
             InitializeComponent();
             var currentAgent = СитдиковаГлазкиСейвEntities.GetContext().Agent.ToList();
+
             //var currentAgents = СитдиковаГлазкиСейвEntities.GetContext().AgentType.ToList();
 
             //for (int i = 0; i < currentAgent.Count; i++)
@@ -72,6 +73,14 @@ namespace СитдиковаГлазкиСейв
             if (ComboSort.SelectedIndex == 1)
             {
                 currentAgent = currentAgent.OrderByDescending(p => p.Title).ToList();
+            }
+            if (ComboSort.SelectedIndex == 3)
+            {
+                currentAgent = currentAgent.OrderBy(p => p.Discount).ToList();
+            }
+            if (ComboSort.SelectedIndex == 4)
+            {
+                currentAgent = currentAgent.OrderByDescending(p => p.Discount).ToList();
             }
             if (ComboSort.SelectedIndex == 5)
             {
@@ -270,6 +279,20 @@ namespace СитдиковаГлазкиСейв
 
         }
 
+       
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage((sender as Button).DataContext as Agent));
+
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            Manager.MainFrame.Navigate(new AddEditPage(null));
+
+        }
+
         private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (Visibility == Visibility.Visible)
@@ -279,5 +302,79 @@ namespace СитдиковаГлазкиСейв
                 UpdateAgent();
             }
         }
+
+        private void AgentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            if (AgentListView.SelectedItems.Count > 1)
+            {
+                ChangePriorityButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                ChangePriorityButton.Visibility = Visibility.Hidden;
+            }
+
+        }
+
+
+
+        private void ChangePriorityButton_Click(object sender, RoutedEventArgs e)
+        {
+            int maxPriority = 0;
+            foreach (Agent agent in AgentListView.SelectedItems)
+            {
+                if (agent.Priority > maxPriority)
+                    maxPriority = agent.Priority;
+            }
+
+            SetWindow myWindow = new SetWindow(maxPriority);
+            myWindow.ShowDialog();
+
+            if (string.IsNullOrEmpty(myWindow.TBPriority.Text))
+            {
+                MessageBox.Show("Изменение не произошло");
+            }
+            else
+            {
+                // Проверяем, является ли введенное значение числом
+                if (int.TryParse(myWindow.TBPriority.Text, out int newPriority))
+                {
+                    // Проверяем, является ли новое значение приоритета отрицательным
+                    if (newPriority < 0)
+                    {
+                        MessageBox.Show("Приоритет не может быть отрицательным.");
+                        return; // Выход из метода, если приоритет отрицательный
+                    }
+
+                    foreach (Agent agent in AgentListView.SelectedItems)
+                    {
+                        agent.Priority = newPriority;
+                    }
+
+                    try
+                    {
+                        СитдиковаГлазкиСейвEntities.GetContext().SaveChanges();
+                        MessageBox.Show("Информация сохранена");
+                        UpdateAgent();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message.ToString());
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Введите корректное числовое значение для приоритета.");
+                }
+            }
+        }
+
+
+        //private void SignUpButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Manager.MainFrame.Navigate(new SignUpPage((sender as Button).DataContext as Agent));
+
+        //}
     }
 }
